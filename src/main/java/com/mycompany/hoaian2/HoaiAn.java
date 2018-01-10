@@ -7,6 +7,8 @@ package com.mycompany.hoaian2;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,7 +28,6 @@ import org.apache.poi.ss.usermodel.*;
  * @author Jack243
  */
 public class HoaiAn extends javax.swing.JFrame {
-
     /**
      * Creates new form HoaiAn
      */
@@ -55,6 +56,8 @@ public class HoaiAn extends javax.swing.JFrame {
         createTableBtn = new javax.swing.JButton();
         exportBtn = new javax.swing.JButton();
         errorLbl = new javax.swing.JLabel();
+        exportFileNameTxt = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -115,9 +118,19 @@ public class HoaiAn extends javax.swing.JFrame {
         });
 
         exportBtn.setText("Xuất file");
+        exportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportBtnActionPerformed(evt);
+            }
+        });
 
         errorLbl.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         errorLbl.setForeground(new java.awt.Color(255, 0, 51));
+        errorLbl.setToolTipText("");
+
+        exportFileNameTxt.setText("hóa đơn");
+
+        jLabel2.setText("Tên file:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -145,10 +158,14 @@ public class HoaiAn extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(errorLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
+                                .addComponent(errorLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(exportFileNameTxt)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(exportBtn))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 645, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -166,7 +183,9 @@ public class HoaiAn extends javax.swing.JFrame {
                     .addComponent(levelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(createTableBtn)
                     .addComponent(exportBtn)
-                    .addComponent(errorLbl))
+                    .addComponent(errorLbl)
+                    .addComponent(exportFileNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2)
@@ -229,6 +248,18 @@ public class HoaiAn extends javax.swing.JFrame {
         // TODO add your handling code here:
         updateTableValues();
     }//GEN-LAST:event_resultTblPropertyChange
+
+    private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
+        // TODO add your handling code here:
+        errorLbl.setText("");
+        try {
+           exportFile(); 
+        } catch (Exception e) {
+            errorLbl.setText("Không thể tạo file!");
+            Logger.getLogger(HoaiAn.class.getName()).log(Level.SEVERE, null, e);
+        }
+        
+    }//GEN-LAST:event_exportBtnActionPerformed
 
     private void updateTableValues() {
         TableModel tableModel = resultTbl.getModel();
@@ -332,6 +363,100 @@ public class HoaiAn extends javax.swing.JFrame {
        initGUI();
     }
     
+    private static HSSFCellStyle createStyleForTitle(HSSFWorkbook workbook) {
+        HSSFFont font = workbook.createFont();
+        font.setBold(true);
+        HSSFCellStyle style = workbook.createCellStyle();
+        style.setFont(font);
+        return style;
+    }
+    
+    private void exportFile() throws FileNotFoundException, IOException {
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("don hang");
+        
+        int rownum = 0;
+        Cell cell;
+        Row row;
+        //
+        HSSFCellStyle style = createStyleForTitle(workbook);
+ 
+        row = sheet.createRow(rownum);
+ 
+        // STT
+        cell = row.createCell(Column.STT.getIndex(), CellType.STRING);
+        cell.setCellValue("");
+        cell.setCellStyle(style);
+        // Tên sản phẩm
+        cell = row.createCell(Column.TEN_SAN_PHAM.getIndex(), CellType.STRING);
+        cell.setCellValue(Column.TEN_SAN_PHAM.getName());
+        cell.setCellStyle(style);
+        // Đơn chính
+        cell = row.createCell(Column.DON_CHINH.getIndex(), CellType.NUMERIC);
+        cell.setCellValue(Column.DON_CHINH.getName());
+        cell.setCellStyle(style);
+        // Lấy thêm lần 1
+        cell = row.createCell(Column.L1.getIndex(), CellType.NUMERIC);
+        cell.setCellValue(Column.L1.getName());
+        cell.setCellStyle(style);
+        // Lấy thêm lần 2
+        cell = row.createCell(Column.L2.getIndex(), CellType.NUMERIC);
+        cell.setCellValue(Column.L2.getName());
+        cell.setCellStyle(style);
+        // Tổng
+        cell = row.createCell(Column.TONG.getIndex(), CellType.NUMERIC);
+        cell.setCellValue(Column.TONG.getName());
+        cell.setCellStyle(style);
+        // Đơn giá
+        cell = row.createCell(Column.DON_GIA.getIndex(), CellType.NUMERIC);
+        cell.setCellValue(Column.DON_GIA.getName());
+        cell.setCellStyle(style);
+        // Thành tiền
+        cell = row.createCell(Column.THANH_TIEN.getIndex(), CellType.NUMERIC);
+        cell.setCellValue(Column.THANH_TIEN.getName());
+        cell.setCellStyle(style);
+ 
+        // Data
+        TableModel tableModel = resultTbl.getModel();
+        for(int i = 0; i < tableModel.getRowCount(); i ++) {
+            rownum++;
+            row = sheet.createRow(rownum);
+ 
+            // STT
+            cell = row.createCell(0, CellType.STRING);
+            cell.setCellValue(String.valueOf(tableModel.getValueAt(i, Column.STT.getIndex())));
+            // Tên sản phẩm
+            cell = row.createCell(Column.TEN_SAN_PHAM.getIndex(), CellType.STRING);
+            cell.setCellValue(String.valueOf(tableModel.getValueAt(i, Column.TEN_SAN_PHAM.getIndex())));
+            // Đơn chính
+            cell = row.createCell(Column.DON_CHINH.getIndex(), CellType.NUMERIC);
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            // Lấy thêm lần 1
+            cell = row.createCell(Column.L1.getIndex(), CellType.NUMERIC);
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            // Lấy thêm lần 2
+            cell = row.createCell(Column.L2.getIndex(), CellType.NUMERIC);
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            // Tổng
+            cell = row.createCell(Column.TONG.getIndex(), CellType.NUMERIC);
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            // Đơn giá
+            cell = row.createCell(Column.DON_GIA.getIndex(), CellType.NUMERIC);
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            // Thành tiền
+            cell = row.createCell(Column.THANH_TIEN.getIndex(), CellType.NUMERIC);
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+        }
+        String fileName = exportFileNameTxt.getText().isEmpty() ? "don hang moi" : exportFileNameTxt.getText();
+        File file = new File("C:/Users/Jack243/Desktop/" + fileName +".xls");
+        file.setWritable(true, false);
+        file.getParentFile().mkdirs();
+ 
+        FileOutputStream outFile = new FileOutputStream(file);
+        workbook.write(outFile);
+        errorLbl.setText("File đã được tạo: " + file.getAbsolutePath());
+    }
+    
     private void initGUI() {
          statusText.setText("Done!");
          System.out.println(productToPrice.toString());
@@ -388,8 +513,10 @@ public class HoaiAn extends javax.swing.JFrame {
     private javax.swing.JButton createTableBtn;
     private javax.swing.JLabel errorLbl;
     private javax.swing.JButton exportBtn;
+    private javax.swing.JTextField exportFileNameTxt;
     private javax.swing.JTextField filePathTbx;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JComboBox<String> levelCbx;

@@ -10,6 +10,8 @@ package com.mycompany.hoaian2;
  * @author Jack243
  */
 public enum Column {
+    STT("",0),
+    TEN_SAN_PHAM("Tên sản phẩm",1),
     DON_CHINH("Đơn chính",2),
     L1("Lấy thêm L1",3),
     L2("Lấy thêm L2",4),
