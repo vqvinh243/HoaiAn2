@@ -224,14 +224,21 @@ public class HoaiAn extends javax.swing.JFrame {
     }//GEN-LAST:event_createTableBtnActionPerformed
     
     private void fillProductToTable() {
+        DefaultTableModel tableModel = (DefaultTableModel)resultTbl.getModel();
         if(!isValidLevel()) {
             errorLbl.setText("Hãy chọn mức nhập!!!");
             return;
+        } else {
+            int rowCount = tableModel.getRowCount();
+            System.out.println("row count:" + rowCount);
+            for(int i = rowCount - 1; i >= 0; i--) {
+                tableModel.removeRow(i);
+            }
         }
         try {
+            
             Integer level = Integer.parseInt((String)levelCbx.getSelectedItem());
             List<String> products = productList.getSelectedValuesList();
-            DefaultTableModel tableModel = (DefaultTableModel)resultTbl.getModel();
             int stt = 0;
             for(String productName : products) {
                 stt++;
@@ -253,7 +260,11 @@ public class HoaiAn extends javax.swing.JFrame {
         // TODO add your handling code here:
         errorLbl.setText("");
         try {
-           exportFile(); 
+           if(exportFileNameTxt.getText().isEmpty()) {
+               errorLbl.setText("Hãy nhập tên file muốn tạo!!!");
+           } else {
+               exportFile();
+           }
         } catch (Exception e) {
             errorLbl.setText("Không thể tạo file!");
             Logger.getLogger(HoaiAn.class.getName()).log(Level.SEVERE, null, e);
@@ -366,6 +377,17 @@ public class HoaiAn extends javax.swing.JFrame {
     private static HSSFCellStyle createStyleForTitle(HSSFWorkbook workbook) {
         HSSFFont font = workbook.createFont();
         font.setBold(true);
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short)11);
+        HSSFCellStyle style = workbook.createCellStyle();
+        style.setFont(font);
+        return style;
+    }
+    
+    private static HSSFCellStyle createStyleForCell(HSSFWorkbook workbook) {
+        HSSFFont font = workbook.createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short)11);
         HSSFCellStyle style = workbook.createCellStyle();
         style.setFont(font);
         return style;
@@ -379,42 +401,43 @@ public class HoaiAn extends javax.swing.JFrame {
         Cell cell;
         Row row;
         //
-        HSSFCellStyle style = createStyleForTitle(workbook);
+        HSSFCellStyle titleStyle = createStyleForTitle(workbook);
+        HSSFCellStyle cellStyle = createStyleForCell(workbook);
  
         row = sheet.createRow(rownum);
  
         // STT
         cell = row.createCell(Column.STT.getIndex(), CellType.STRING);
         cell.setCellValue("");
-        cell.setCellStyle(style);
+        cell.setCellStyle(titleStyle);
         // Tên sản phẩm
         cell = row.createCell(Column.TEN_SAN_PHAM.getIndex(), CellType.STRING);
         cell.setCellValue(Column.TEN_SAN_PHAM.getName());
-        cell.setCellStyle(style);
+        cell.setCellStyle(titleStyle);
         // Đơn chính
         cell = row.createCell(Column.DON_CHINH.getIndex(), CellType.NUMERIC);
         cell.setCellValue(Column.DON_CHINH.getName());
-        cell.setCellStyle(style);
+        cell.setCellStyle(titleStyle);
         // Lấy thêm lần 1
         cell = row.createCell(Column.L1.getIndex(), CellType.NUMERIC);
         cell.setCellValue(Column.L1.getName());
-        cell.setCellStyle(style);
+        cell.setCellStyle(titleStyle);
         // Lấy thêm lần 2
         cell = row.createCell(Column.L2.getIndex(), CellType.NUMERIC);
         cell.setCellValue(Column.L2.getName());
-        cell.setCellStyle(style);
+        cell.setCellStyle(titleStyle);
         // Tổng
         cell = row.createCell(Column.TONG.getIndex(), CellType.NUMERIC);
         cell.setCellValue(Column.TONG.getName());
-        cell.setCellStyle(style);
+        cell.setCellStyle(titleStyle);
         // Đơn giá
         cell = row.createCell(Column.DON_GIA.getIndex(), CellType.NUMERIC);
         cell.setCellValue(Column.DON_GIA.getName());
-        cell.setCellStyle(style);
+        cell.setCellStyle(titleStyle);
         // Thành tiền
         cell = row.createCell(Column.THANH_TIEN.getIndex(), CellType.NUMERIC);
         cell.setCellValue(Column.THANH_TIEN.getName());
-        cell.setCellStyle(style);
+        cell.setCellStyle(titleStyle);
  
         // Data
         TableModel tableModel = resultTbl.getModel();
@@ -425,27 +448,35 @@ public class HoaiAn extends javax.swing.JFrame {
             // STT
             cell = row.createCell(0, CellType.STRING);
             cell.setCellValue(String.valueOf(tableModel.getValueAt(i, Column.STT.getIndex())));
+            cell.setCellStyle(cellStyle);
             // Tên sản phẩm
             cell = row.createCell(Column.TEN_SAN_PHAM.getIndex(), CellType.STRING);
             cell.setCellValue(String.valueOf(tableModel.getValueAt(i, Column.TEN_SAN_PHAM.getIndex())));
+            cell.setCellStyle(cellStyle);
             // Đơn chính
             cell = row.createCell(Column.DON_CHINH.getIndex(), CellType.NUMERIC);
             cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellStyle(cellStyle);
             // Lấy thêm lần 1
             cell = row.createCell(Column.L1.getIndex(), CellType.NUMERIC);
             cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellStyle(cellStyle);
             // Lấy thêm lần 2
             cell = row.createCell(Column.L2.getIndex(), CellType.NUMERIC);
             cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellStyle(cellStyle);
             // Tổng
             cell = row.createCell(Column.TONG.getIndex(), CellType.NUMERIC);
             cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellStyle(cellStyle);
             // Đơn giá
             cell = row.createCell(Column.DON_GIA.getIndex(), CellType.NUMERIC);
             cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellStyle(cellStyle);
             // Thành tiền
             cell = row.createCell(Column.THANH_TIEN.getIndex(), CellType.NUMERIC);
             cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellStyle(cellStyle);
         }
         String fileName = exportFileNameTxt.getText().isEmpty() ? "don hang moi" : exportFileNameTxt.getText();
         File file = new File("C:/Users/Jack243/Desktop/" + fileName +".xls");
@@ -454,6 +485,7 @@ public class HoaiAn extends javax.swing.JFrame {
  
         FileOutputStream outFile = new FileOutputStream(file);
         workbook.write(outFile);
+        outFile.close();
         errorLbl.setText("File đã được tạo: " + file.getAbsolutePath());
     }
     
