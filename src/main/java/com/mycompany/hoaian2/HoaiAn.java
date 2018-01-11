@@ -5,23 +5,24 @@
  */
 package com.mycompany.hoaian2;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.*;
 
 /**
  *
@@ -33,6 +34,7 @@ public class HoaiAn extends javax.swing.JFrame {
      */
     public HoaiAn() {
         initComponents();
+        setTitle("Chúc vợ yêu dấu làm việc vui vẻ!!!");
     }
 
     /**
@@ -78,6 +80,13 @@ public class HoaiAn extends javax.swing.JFrame {
         levelCbx.setMaximumRowCount(20);
         levelCbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mức nhập" }));
         levelCbx.setToolTipText("");
+        levelCbx.addActionListener (new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(isValidLevel() && resultTbl.getRowCount() > 0) {
+                    updatePriceValueToTable(Integer.valueOf(String.valueOf(levelCbx.getSelectedItem())));
+                }
+            }
+        });
 
         resultTbl.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         resultTbl.setModel(new javax.swing.table.DefaultTableModel(
@@ -124,11 +133,11 @@ public class HoaiAn extends javax.swing.JFrame {
             }
         });
 
-        errorLbl.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        errorLbl.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         errorLbl.setForeground(new java.awt.Color(255, 0, 51));
         errorLbl.setToolTipText("");
 
-        exportFileNameTxt.setText("hóa đơn");
+        exportFileNameTxt.setText("");
 
         jLabel2.setText("Tên file:");
 
@@ -228,7 +237,7 @@ public class HoaiAn extends javax.swing.JFrame {
     private void fillProductToTable() {
         DefaultTableModel tableModel = (DefaultTableModel)resultTbl.getModel();
         if(!isValidLevel()) {
-            errorLbl.setText("Hãy chọn mức nhập!!!");
+            errorLbl.setText("Vợ chọn mức nhập hàng cho sỉ đi kìa <3");
             return;
         } else {
             int rowCount = tableModel.getRowCount();
@@ -248,7 +257,7 @@ public class HoaiAn extends javax.swing.JFrame {
             }
             tableModel.addRow(new Object[]{"", "TỔNG", 0, 0, 0, 0, "", 0});
         } catch (Exception e) {
-            errorLbl.setText("Đã có lỗi gì đó xảy ra!!!");
+            errorLbl.setText("Ây da, phần mềm của chồng có lỗi rồi :(");
         }
         
     }
@@ -263,12 +272,12 @@ public class HoaiAn extends javax.swing.JFrame {
         errorLbl.setText("");
         try {
            if(exportFileNameTxt.getText().isEmpty()) {
-               errorLbl.setText("Hãy nhập tên file muốn tạo!!!");
+               errorLbl.setText("Vợ yêu quên nhập tên file kìa :)");
            } else {
                exportFile();
            }
         } catch (Exception e) {
-            errorLbl.setText("Không thể tạo file!");
+            errorLbl.setText("Oạch!!! Bị lỗi gì rồi vợ ơi, vợ làm lại thử xem...");
             Logger.getLogger(HoaiAn.class.getName()).log(Level.SEVERE, null, e);
         }
         
@@ -304,6 +313,17 @@ public class HoaiAn extends javax.swing.JFrame {
                 tableModel.setValueAt(thanhtienTotal, row, Column.THANH_TIEN.getIndex());
             }
         }
+    }
+
+    private void updatePriceValueToTable(Integer level) {
+        TableModel tableModel = resultTbl.getModel();
+        for(int row = 0; row < tableModel.getRowCount(); row ++) {
+            if(row < (tableModel.getRowCount() - 1)) {
+                String productName = (String)tableModel.getValueAt(row, Column.TEN_SAN_PHAM.getIndex());
+                tableModel.setValueAt(productToPrice.get(productName).get(level), row, Column.DON_GIA.getIndex());
+            }
+        }
+        updateTableValues();
     }
     
     static Map<Integer, Integer> indexToLevel = new HashMap<>();
@@ -539,11 +559,11 @@ public class HoaiAn extends javax.swing.JFrame {
         FileOutputStream outFile = new FileOutputStream(file);
         workbook.write(outFile);
         outFile.close();
-        errorLbl.setText("File đã được tạo: " + file.getAbsolutePath());
+        errorLbl.setText("Vợ yêu tạo xong đơn hàng rồi nè: " + file.getAbsolutePath());
     }
     
     private void initGUI() {
-         statusText.setText("Done!");
+         statusText.setText("Nhập file thành công!");
          System.out.println(productToPrice.toString());
          productList.setListData(productToPrice.keySet().toArray(new String[productToPrice.size()]));
          for(Integer level : indexToLevel.keySet()) {
