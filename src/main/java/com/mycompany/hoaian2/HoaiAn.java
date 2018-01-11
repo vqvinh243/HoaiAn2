@@ -85,7 +85,7 @@ public class HoaiAn extends javax.swing.JFrame {
 
             },
             new String [] {
-                "", "Tên sản phẩm", "Đơn chính", "Lấy thêm L1", "Lấy thêm L2", "Tổng", "Đơn giá", "Thành tiền"
+                    Column.STT.getName(), Column.TEN_SAN_PHAM.getName(), Column.DON_CHINH.getName(), Column.L1.getName(), Column.L2.getName(), Column.TONG.getName(), Column.DON_GIA.getName(), Column.THANH_TIEN.getName()
             }
         ) {
             Class[] types = new Class [] {
@@ -246,7 +246,7 @@ public class HoaiAn extends javax.swing.JFrame {
                 stt++;
                 tableModel.addRow(new Object[]{stt, productName, 0, 0, 0, 0, productToPrice.get(productName).get(level), 0});
             }
-            tableModel.addRow(new Object[]{"", "Tổng", 0, 0, 0, 0, "", 0});
+            tableModel.addRow(new Object[]{"", "TỔNG", 0, 0, 0, 0, "", 0});
         } catch (Exception e) {
             errorLbl.setText("Đã có lỗi gì đó xảy ra!!!");
         }
@@ -383,6 +383,9 @@ public class HoaiAn extends javax.swing.JFrame {
         font.setFontHeightInPoints((short)11);
         HSSFCellStyle style = workbook.createCellStyle();
         style.setFont(font);
+        style.setAlignment(HorizontalAlignment.CENTER);
+//        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//        style.setFillBackgroundColor(IndexedColors.LAVENDER.getIndex());
         return style;
     }
     
@@ -392,13 +395,23 @@ public class HoaiAn extends javax.swing.JFrame {
         font.setFontHeightInPoints((short)11);
         HSSFCellStyle style = workbook.createCellStyle();
         style.setFont(font);
+        style.setAlignment(HorizontalAlignment.CENTER);
         return style;
     }
     
     private void exportFile() throws FileNotFoundException, IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("don hang");
-        
+
+        sheet.setColumnWidth(Column.STT.getIndex(), 1500);
+        sheet.setColumnWidth(Column.TEN_SAN_PHAM.getIndex(), 4500);
+        sheet.setColumnWidth(Column.DON_CHINH.getIndex(), 3500);
+        sheet.setColumnWidth(Column.L1.getIndex(), 3500);
+        sheet.setColumnWidth(Column.L2.getIndex(), 3500);
+        sheet.setColumnWidth(Column.TONG.getIndex(), 3500);
+        sheet.setColumnWidth(Column.DON_GIA.getIndex(), 3500);
+        sheet.setColumnWidth(Column.THANH_TIEN.getIndex(), 3500);
+
         int rownum = 0;
         Cell cell;
         Row row;
