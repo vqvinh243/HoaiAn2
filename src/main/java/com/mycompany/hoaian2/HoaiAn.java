@@ -198,6 +198,7 @@ public class HoaiAn extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     File selectedFile;
+    String fileDirectoryPath;
     private void selectFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectFileBtnActionPerformed
         JFileChooser fc = new JFileChooser();
         int x = fc.showOpenDialog(null);
@@ -205,6 +206,7 @@ public class HoaiAn extends javax.swing.JFrame {
             char cbuf[] = null;
             FileReader r;
             selectedFile = fc.getSelectedFile();
+            fileDirectoryPath = selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().lastIndexOf("/") + 1);
             filePathTbx.setText(selectedFile.getAbsolutePath());
             FileInputStream fis;
             try {
@@ -479,7 +481,7 @@ public class HoaiAn extends javax.swing.JFrame {
             cell.setCellStyle(cellStyle);
         }
         String fileName = exportFileNameTxt.getText().isEmpty() ? "don hang moi" : exportFileNameTxt.getText();
-        File file = new File("C:/Users/Jack243/Desktop/" + fileName +".xls");
+        File file = new File(fileDirectoryPath + fileName +".xls");
         file.setWritable(true, false);
         file.getParentFile().mkdirs();
  
