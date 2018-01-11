@@ -433,7 +433,7 @@ public class HoaiAn extends javax.swing.JFrame {
         cell.setCellValue(Column.TONG.getName());
         cell.setCellStyle(titleStyle);
         // Đơn giá
-        cell = row.createCell(Column.DON_GIA.getIndex(), CellType.NUMERIC);
+        cell = row.createCell(Column.DON_GIA.getIndex(), CellType.STRING);
         cell.setCellValue(Column.DON_GIA.getName());
         cell.setCellStyle(titleStyle);
         // Thành tiền
@@ -461,23 +461,23 @@ public class HoaiAn extends javax.swing.JFrame {
             cell.setCellStyle(cellStyle);
             // Lấy thêm lần 1
             cell = row.createCell(Column.L1.getIndex(), CellType.NUMERIC);
-            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.L1.getIndex()));
             cell.setCellStyle(cellStyle);
             // Lấy thêm lần 2
             cell = row.createCell(Column.L2.getIndex(), CellType.NUMERIC);
-            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.L2.getIndex()));
             cell.setCellStyle(cellStyle);
             // Tổng
             cell = row.createCell(Column.TONG.getIndex(), CellType.NUMERIC);
-            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.TONG.getIndex()));
             cell.setCellStyle(cellStyle);
             // Đơn giá
-            cell = row.createCell(Column.DON_GIA.getIndex(), CellType.NUMERIC);
-            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell = row.createCell(Column.DON_GIA.getIndex(), CellType.STRING);
+            cell.setCellValue(String.valueOf(tableModel.getValueAt(i, Column.DON_GIA.getIndex())));
             cell.setCellStyle(cellStyle);
             // Thành tiền
             cell = row.createCell(Column.THANH_TIEN.getIndex(), CellType.NUMERIC);
-            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
+            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.THANH_TIEN.getIndex()));
             cell.setCellStyle(cellStyle);
         }
         String fileName = exportFileNameTxt.getText().isEmpty() ? "don hang moi" : exportFileNameTxt.getText();
