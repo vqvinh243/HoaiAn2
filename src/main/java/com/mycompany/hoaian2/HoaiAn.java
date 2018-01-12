@@ -246,6 +246,9 @@ public class HoaiAn extends javax.swing.JFrame {
             FileReader r;
             selectedFile = fc.getSelectedFile();
             fileDirectoryPath = selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().lastIndexOf("/") + 1);
+            if(fileDirectoryPath.isEmpty()) {
+                fileDirectoryPath = selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().lastIndexOf("\\") + 1);
+            }
             filePathTbx.setText(selectedFile.getAbsolutePath());
             FileInputStream fis;
             try {
