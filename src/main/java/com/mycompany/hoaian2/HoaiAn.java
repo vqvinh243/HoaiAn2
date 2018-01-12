@@ -20,6 +20,7 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -31,6 +32,8 @@ public class HoaiAn extends javax.swing.JFrame {
      */
     public HoaiAn() {
         initComponents();
+        resultTbl.getColumnModel().getColumn(Column.STT.getIndex()).setMaxWidth(50);
+        resultTbl.getColumnModel().getColumn(Column.TEN_SAN_PHAM.getIndex()).setMinWidth(120);
         setLocationRelativeTo(null);
         setTitle("Chúc vợ yêu dấu làm việc vui vẻ!!!");
     }
@@ -90,7 +93,8 @@ public class HoaiAn extends javax.swing.JFrame {
             }
         });
 
-        resultTbl.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        resultTbl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        resultTbl.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         resultTbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -114,6 +118,7 @@ public class HoaiAn extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        resultTbl.setRowHeight(20);
         resultTbl.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 resultTblPropertyChange(evt);
