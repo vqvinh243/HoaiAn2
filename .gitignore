@@ -66,3 +66,8 @@ target/classes/.netbeans_automatic_build
 target/maven-archiver/pom.properties
 *.lst
 nb-configuration.xml
+*.xml
+*.xml
+*.xml
+*.iml
+*.xml

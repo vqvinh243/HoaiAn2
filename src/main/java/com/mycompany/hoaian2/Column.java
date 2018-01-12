@@ -17,7 +17,8 @@ public enum Column {
     L2("Lấy thêm L2",4),
     TONG("Tổng",5),
     DON_GIA("Đơn giá",6),
-    THANH_TIEN("Thành tiền",7);
+    THANH_TIEN("Thành tiền",7),
+    LOI_NHUAN("Lợi nhuận",8);
     
     String name;
     Integer index;
