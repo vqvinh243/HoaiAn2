@@ -14,13 +14,14 @@ import org.apache.poi.ss.usermodel.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.DefaultTableCellRenderer;
+import java.util.stream.Stream;
 
 /**
  *
@@ -36,6 +37,7 @@ public class HoaiAn extends javax.swing.JFrame {
         resultTbl.getColumnModel().getColumn(Column.TEN_SAN_PHAM.getIndex()).setMinWidth(120);
         setLocationRelativeTo(null);
         setTitle("Chúc vợ yêu dấu làm việc vui vẻ!!!");
+        initSelectProductListByFile();
     }
 
     /**
@@ -47,9 +49,6 @@ public class HoaiAn extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        filePathTbx = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        selectFileBtn = new javax.swing.JButton();
         statusText = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         productList = new javax.swing.JList<>();
@@ -64,18 +63,10 @@ public class HoaiAn extends javax.swing.JFrame {
         buyLevelCbx = new javax.swing.JComboBox<>();
         profitCbx = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
+        inputSelectorCbx = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-
-        jLabel1.setText("File:");
-
-        selectFileBtn.setText("Chọn...");
-        selectFileBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                selectFileBtnActionPerformed(evt);
-            }
-        });
 
         statusText.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         statusText.setForeground(new java.awt.Color(51, 102, 255));
@@ -145,6 +136,8 @@ public class HoaiAn extends javax.swing.JFrame {
         errorLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         errorLbl.setToolTipText("");
 
+        exportFileNameTxt.setColumns(10);
+
         jLabel2.setText("Tên file:");
 
         buyLevelCbx.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
@@ -164,77 +157,78 @@ public class HoaiAn extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Sản phẩm độc quyền của An Mocha");
 
+        inputSelectorCbx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Loại sản phẩm" }));
+        inputSelectorCbx.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectProductListByFile(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(saleLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buyLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(inputSelectorCbx, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(saleLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buyLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel1)
-                        .addGap(10, 10, 10)
-                        .addComponent(filePathTbx, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 771, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(createTableBtn)
-                            .addComponent(selectFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(statusText, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(statusText, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(errorLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(createTableBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(exportFileNameTxt)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(profitCbx)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(exportBtn)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(errorLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(exportFileNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(profitCbx)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(exportBtn)
+                                        .addContainerGap())))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(filePathTbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(selectFileBtn)
-                        .addComponent(statusText)
-                        .addComponent(jLabel3))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(inputSelectorCbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(statusText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(saleLevelCbx)
+                    .addComponent(saleLevelCbx, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                     .addComponent(buyLevelCbx)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(exportBtn)
-                            .addComponent(exportFileNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(profitCbx)
-                            .addComponent(errorLbl)
-                            .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(createTableBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(createTableBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(exportBtn)
+                        .addComponent(exportFileNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(profitCbx)
+                        .addComponent(jLabel2)
+                        .addComponent(errorLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -245,29 +239,6 @@ public class HoaiAn extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     File selectedFile;
     String fileDirectoryPath;
-    private void selectFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectFileBtnActionPerformed
-        JFileChooser fc = new JFileChooser();
-        int x = fc.showOpenDialog(null);
-        if(x == JFileChooser.APPROVE_OPTION) {
-            char cbuf[] = null;
-            FileReader r;
-            selectedFile = fc.getSelectedFile();
-            fileDirectoryPath = selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().lastIndexOf("/") + 1);
-            if(fileDirectoryPath.isEmpty()) {
-                fileDirectoryPath = selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().lastIndexOf("\\") + 1);
-            }
-            filePathTbx.setText(selectedFile.getAbsolutePath());
-            FileInputStream fis;
-            try {
-                fis = new FileInputStream(selectedFile);
-                readInputExcel(fis);
-            } catch (Exception ex) {
-                statusText.setText("Please choose again...");
-                Logger.getLogger(HoaiAn.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_selectFileBtnActionPerformed
-
     private void createTableBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTableBtnActionPerformed
         // TODO add your handling code here:
         errorLbl.setText("");
@@ -340,6 +311,38 @@ public class HoaiAn extends javax.swing.JFrame {
             updatePriceValueToTable(String.valueOf(buyLevelCbx.getSelectedItem()), false);
         }
     }//GEN-LAST:event_buyLevelCbxActionPerformed
+    private Map<String, File> fileNameToFile = new HashMap<>();
+    private void initSelectProductListByFile() {
+        String userDir = System.getProperty("user.dir");
+        String resourcesDir = userDir;
+        try {
+            Stream<Path> paths = Files.walk(Paths.get(userDir));
+            resourcesDir = paths
+                    .filter(f -> f.getFileName().toString().contains("resources"))
+                    .findFirst().get().toString();
+            paths = Files.walk(Paths.get(resourcesDir));
+            paths.filter(Files::isRegularFile)
+                    .forEach(f -> {
+                        String fileName = f.getName(f.getNameCount() - 1).toString();
+                        fileNameToFile.put(fileName.substring(0, fileName.lastIndexOf(".")), f.toFile());
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        fileNameToFile.keySet().stream().forEach(name -> inputSelectorCbx.addItem(name));
+    }
+
+    private void selectProductListByFile(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectProductListByFile
+        // TODO add your handling code here:
+        FileInputStream fis;
+        try {
+            fis = new FileInputStream(fileNameToFile.get(inputSelectorCbx.getSelectedItem().toString()));
+            readInputExcel(fis);
+        } catch (Exception ex) {
+            statusText.setText("Please choose again...");
+            Logger.getLogger(HoaiAn.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_selectProductListByFile
 //    static boolean printProfit = false;
     private void updateTableValues() {
         TableModel tableModel = resultTbl.getModel();
@@ -727,8 +730,7 @@ public class HoaiAn extends javax.swing.JFrame {
     private javax.swing.JLabel errorLbl;
     private javax.swing.JButton exportBtn;
     private javax.swing.JTextField exportFileNameTxt;
-    private javax.swing.JTextField filePathTbx;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox<String> inputSelectorCbx;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
@@ -737,7 +739,6 @@ public class HoaiAn extends javax.swing.JFrame {
     private javax.swing.JCheckBox profitCbx;
     private javax.swing.JTable resultTbl;
     private javax.swing.JComboBox<String> saleLevelCbx;
-    private javax.swing.JButton selectFileBtn;
     private javax.swing.JLabel statusText;
     // End of variables declaration//GEN-END:variables
 }
