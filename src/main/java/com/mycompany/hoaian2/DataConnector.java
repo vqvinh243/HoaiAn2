@@ -30,9 +30,17 @@ public class DataConnector {
     private HikariDataSource setMySQLConnection() throws SQLException {
         HikariDataSource ds = new HikariDataSource();
         ds.setDriverClassName("com.mysql.jdbc.Driver");
-        ds.setJdbcUrl("jdbc:mysql://localhost:3306/hoaian");
-        ds.setUsername("root");
+//        ds.setJdbcUrl("jdbc:mysql://sql12.freemysqlhosting.net:3306/sql12238600");
+//        ds.setUsername("sql12238600");
+//        ds.setPassword("STcC4PMWRx");
+
+        ds.setJdbcUrl("jdbc:mysql://db4free.net:3306/hoaianmocha");
+        ds.setUsername("quangvinh");
         ds.setPassword("quangvinh");
+
+//        ds.setJdbcUrl("jdbc:mysql://localhost:3306/hoaian");
+//        ds.setUsername("root");
+//        ds.setPassword("quangvinh");
         ds.setMaximumPoolSize(5);
         ds.setLeakDetectionThreshold(1000000);
         return ds;

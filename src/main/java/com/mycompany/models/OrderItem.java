@@ -1,10 +1,12 @@
 package com.mycompany.models;
 
-public class OrderItem {
+public class OrderItem implements Cloneable{
     Integer id;
     Integer orderId;
     Product product;
     Integer quantity;
+    Integer l1;
+    Integer l2;
     Integer price;
     Integer unitPrice;
     Integer profit;
@@ -31,6 +33,22 @@ public class OrderItem {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getL1() {
+        return l1;
+    }
+
+    public void setL1(Integer l1) {
+        this.l1 = l1;
+    }
+
+    public Integer getL2() {
+        return l2;
+    }
+
+    public void setL2(Integer l2) {
+        this.l2 = l2;
     }
 
     public Product getProduct() {
@@ -63,5 +81,11 @@ public class OrderItem {
 
     public void setProfit(Integer profit) {
         this.profit = profit;
+    }
+
+    @Override
+    public OrderItem clone() throws CloneNotSupportedException {
+        OrderItem item = (OrderItem) super.clone();
+        return item;
     }
 }

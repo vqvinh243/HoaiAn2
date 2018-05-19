@@ -1,9 +1,10 @@
 package com.mycompany.models;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Order {
+public class Order implements Cloneable{
     Integer id;
     String name;
     Customer customer;
@@ -48,5 +49,12 @@ public class Order {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    @Override
+    public Order clone() throws CloneNotSupportedException {
+        Order cloned = (Order) super.clone();
+        cloned.setItems(new ArrayList<>());
+        return cloned;
     }
 }
