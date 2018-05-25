@@ -120,6 +120,8 @@ public class Processor {
                 item.setOrderId(order.getId());
                 item.setUnitPrice(rs.getInt("unitprice"));
                 item.setQuantity(rs.getInt("quantity"));
+                item.setL1(rs.getInt("l1"));
+                item.setL2(rs.getInt("l2"));
                 item.setPrice(rs.getInt("price"));
                 item.setProfit(rs.getInt("profit"));
                 Product product = new Product();
