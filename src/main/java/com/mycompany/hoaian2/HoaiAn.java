@@ -5,11 +5,7 @@
  */
 package com.mycompany.hoaian2;
 
-import com.mycompany.models.Customer;
-import com.mycompany.models.Order;
-import com.mycompany.models.OrderItem;
-import com.mycompany.models.Product;
-import org.apache.commons.collections4.CollectionUtils;
+import com.mycompany.models.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 
@@ -24,7 +20,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -35,16 +30,17 @@ public class HoaiAn extends javax.swing.JFrame {
     /**
      * Creates new form HoaiAn
      */
-    private Processor processor = new Processor();
+    private static Controller controller;
     public HoaiAn() {
         initComponents();
-        resultTbl.getColumnModel().getColumn(Column.STT.getIndex()).setMaxWidth(50);
-        resultTbl.getColumnModel().getColumn(Column.TEN_SAN_PHAM.getIndex()).setMinWidth(120);
+        orderTbl.getColumnModel().getColumn(Column.STT.getIndex()).setMaxWidth(50);
+        orderTbl.getColumnModel().getColumn(Column.TEN_SAN_PHAM.getIndex()).setMinWidth(120);
         summaryTbl.getColumnModel().getColumn(Column.STT.getIndex()).setMaxWidth(50);
         summaryTbl.getColumnModel().getColumn(Column.TEN_SAN_PHAM.getIndex()).setMinWidth(120);
         setLocationRelativeTo(null);
         setTitle("Chúc vợ yêu dấu làm việc vui vẻ!!!");
         initSelectProductListByFile();
+        toDateTbx.setText(LocalDate.now().toString());
     }
 
     /**
@@ -60,7 +56,7 @@ public class HoaiAn extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         buyLevelCbx = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        resultTbl = new javax.swing.JTable();
+        orderTbl = new javax.swing.JTable();
         statusText = new javax.swing.JLabel();
         inputSelectorCbx = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
@@ -104,9 +100,9 @@ public class HoaiAn extends javax.swing.JFrame {
             }
         });
 
-        resultTbl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        resultTbl.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        resultTbl.setModel(new javax.swing.table.DefaultTableModel(
+        orderTbl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        orderTbl.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        orderTbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -129,13 +125,13 @@ public class HoaiAn extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        resultTbl.setRowHeight(20);
-        resultTbl.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        orderTbl.setRowHeight(20);
+        orderTbl.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 resultTblPropertyChange(evt);
             }
         });
-        jScrollPane2.setViewportView(resultTbl);
+        jScrollPane2.setViewportView(orderTbl);
 
         statusText.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         statusText.setForeground(new java.awt.Color(51, 102, 255));
@@ -426,8 +422,6 @@ public class HoaiAn extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    File selectedFile;
-    String fileDirectoryPath;
     private void createTableBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTableBtnActionPerformed
         // TODO add your handling code here:
         errorLbl.setText("");
@@ -438,7 +432,7 @@ public class HoaiAn extends javax.swing.JFrame {
 
     private void fillProductToTable() {
         productToBuyPrice.clear();
-        DefaultTableModel tableModel = (DefaultTableModel)resultTbl.getModel();
+        DefaultTableModel tableModel = (DefaultTableModel) orderTbl.getModel();
         if(!isValidLevel()) {
             return;
         } else {
@@ -467,7 +461,7 @@ public class HoaiAn extends javax.swing.JFrame {
     
     private void resultTblPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_resultTblPropertyChange
         // TODO add your handling code here:
-        updateTableValues(resultTbl);
+        updateTableValues(orderTbl);
     }//GEN-LAST:event_resultTblPropertyChange
 
     private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
@@ -477,7 +471,8 @@ public class HoaiAn extends javax.swing.JFrame {
            if(exportFileNameTxt.getText().isEmpty()) {
                errorLbl.setText("Vợ yêu quên nhập tên file kìa :)");
            } else {
-               exportFile(true);
+               controller.exportFile(Page.ORDER, getFileNameByPage(Page.ORDER), getModelByPage(Page.ORDER));
+               errorLbl.setText("Vợ yêu tạo xong đơn hàng rồi nè!");
            }
         } catch (Exception e) {
             errorLbl.setText("Oạch!!! Bị lỗi gì rồi vợ ơi, vợ làm lại thử xem...");
@@ -488,14 +483,14 @@ public class HoaiAn extends javax.swing.JFrame {
 
     private void saleLevelCbxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleLevelCbxActionPerformed
         // TODO add your handling code here:
-        if(isValidLevel() && resultTbl.getRowCount() > 0) {
+        if(isValidLevel() && orderTbl.getRowCount() > 0) {
             updatePriceValueToTable(String.valueOf(saleLevelCbx.getSelectedItem()), true);
         }
     }//GEN-LAST:event_saleLevelCbxActionPerformed
 
     private void buyLevelCbxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyLevelCbxActionPerformed
         // TODO add your handling code here:
-        if(isValidLevel() && resultTbl.getRowCount() > 0) {
+        if(isValidLevel() && orderTbl.getRowCount() > 0) {
             updatePriceValueToTable(String.valueOf(buyLevelCbx.getSelectedItem()), false);
         }
     }//GEN-LAST:event_buyLevelCbxActionPerformed
@@ -545,7 +540,7 @@ public class HoaiAn extends javax.swing.JFrame {
     }//GEN-LAST:event_loadBillBtnActionPerformed
 
     private void reloadOrderList() {
-        List<Order> orders = processor.getOrdersByDateRange(fromDateTbx.getText(), toDateTbx.getText());
+        List<Order> orders = controller.getProcessor().getOrdersByDateRange(fromDateTbx.getText(), toDateTbx.getText());
         nameToOrder.clear();
         orders.forEach(o -> nameToOrder.put(o.getName() + " (" + o.getCreatedDate() + ")", o));
         billList.setListData(nameToOrder.keySet().toArray(new String[nameToOrder.size()]));
@@ -561,7 +556,7 @@ public class HoaiAn extends javax.swing.JFrame {
             //get selected orders
             List<Order> selectedOrders = new ArrayList<>();
             billList.getSelectedValuesList().forEach(name -> selectedOrders.add(nameToOrder.get(name)));
-            Order order = processor.summarizeOrders(selectedOrders);
+            Order order = controller.getProcessor().summarizeOrders(selectedOrders);
             updateOrderToTable(order);
 
             //update filename text field
@@ -572,7 +567,7 @@ public class HoaiAn extends javax.swing.JFrame {
     private void exportSummaryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportSummaryBtnActionPerformed
         // TODO add your handling code here:
         try {
-            exportFile(false);
+            controller.exportFile(Page.SUMMARY, getFileNameByPage(Page.SUMMARY), getModelByPage(Page.SUMMARY));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -585,7 +580,7 @@ public class HoaiAn extends javax.swing.JFrame {
             if(input == 0) {
                 List<Order> selectedOrders = new ArrayList<>();
                 billList.getSelectedValuesList().forEach(name -> selectedOrders.add(nameToOrder.get(name)));
-                processor.deleteOrders(selectedOrders);
+                controller.getProcessor().deleteOrders(selectedOrders);
                 reloadOrderList();
             }
         }
@@ -610,7 +605,6 @@ public class HoaiAn extends javax.swing.JFrame {
         tableModel.addRow(new Object[]{"", "TỔNG", quantity, 0, 0, quantity, "", price.toString(), profit});
     }
 
-//    static boolean printProfit = false;
     private void updateTableValues(javax.swing.JTable jTable) {
         TableModel tableModel = jTable.getModel();
         int donchinhTotal = 0;
@@ -650,7 +644,7 @@ public class HoaiAn extends javax.swing.JFrame {
     }
 
     private void updatePriceValueToTable(String level, boolean isSaleLevelChanged) {
-        TableModel tableModel = resultTbl.getModel();
+        TableModel tableModel = orderTbl.getModel();
         if(!isSaleLevelChanged) {
             productToBuyPrice.clear();
         }
@@ -665,7 +659,7 @@ public class HoaiAn extends javax.swing.JFrame {
 
             }
         }
-        updateTableValues(resultTbl);
+        updateTableValues(orderTbl);
     }
 
     
@@ -742,243 +736,22 @@ public class HoaiAn extends javax.swing.JFrame {
         }
        initGUI();
     }
-    
-    private static HSSFCellStyle createStyleForTitle(HSSFWorkbook workbook) {
-        HSSFFont font = workbook.createFont();
-        font.setBold(true);
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short)11);
-        HSSFCellStyle style = workbook.createCellStyle();
-        style.setFont(font);
-        style.setAlignment(HorizontalAlignment.CENTER);
-        style.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        return style;
-    }
-    
-    private static HSSFCellStyle createStyleForNormalCell(HSSFWorkbook workbook) {
-        HSSFFont font = workbook.createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short)11);
-        HSSFCellStyle style = workbook.createCellStyle();
-        style.setFont(font);
-        style.setAlignment(HorizontalAlignment.CENTER);
-        return style;
-    }
 
-    private static HSSFCellStyle createStyleForProductName(HSSFWorkbook workbook) {
-        HSSFFont font = workbook.createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short)11);
-        HSSFCellStyle style = workbook.createCellStyle();
-        style.setFont(font);
-        style.setAlignment(HorizontalAlignment.CENTER);
-        style.setFillForegroundColor(IndexedColors.TAN.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        return style;
-    }
-
-    private static HSSFCellStyle createStyleForSum(HSSFWorkbook workbook) {
-        HSSFFont font = workbook.createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short)11);
-        HSSFCellStyle style = workbook.createCellStyle();
-        style.setFont(font);
-        style.setAlignment(HorizontalAlignment.CENTER);
-        style.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        return style;
-    }
-    
-    private void exportFile(boolean isInputOrderPage) throws FileNotFoundException, IOException {
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        Order order = new Order();
-        HSSFSheet sheet = workbook.createSheet("don hang");
-        sheet.setColumnWidth(Column.STT.getIndex(), 1500);
-        sheet.setColumnWidth(Column.TEN_SAN_PHAM.getIndex(), 4500);
-        sheet.setColumnWidth(Column.DON_CHINH.getIndex(), 3500);
-        sheet.setColumnWidth(Column.L1.getIndex(), 3500);
-        sheet.setColumnWidth(Column.L2.getIndex(), 3500);
-        sheet.setColumnWidth(Column.TONG.getIndex(), 3500);
-        sheet.setColumnWidth(Column.DON_GIA.getIndex(), 3500);
-        sheet.setColumnWidth(Column.THANH_TIEN.getIndex(), 3500);
-        if(profitCbx.isSelected()) {
-            sheet.setColumnWidth(Column.LOI_NHUAN.getIndex(), 3500);
-        }
-
-        int rownum = 0;
-        Cell cell;
-        Row row;
-        //
-        HSSFCellStyle titleStyle = createStyleForTitle(workbook);
-        HSSFCellStyle normalCellStyle = createStyleForNormalCell(workbook);
-        HSSFCellStyle productNameCellStyle = createStyleForProductName(workbook);
-        HSSFCellStyle sumCellStyle = createStyleForSum(workbook);
- 
-        row = sheet.createRow(rownum);
- 
-        // STT
-        cell = row.createCell(Column.STT.getIndex(), CellType.STRING);
-        cell.setCellValue("");
-        // Tên sản phẩm
-        cell = row.createCell(Column.TEN_SAN_PHAM.getIndex(), CellType.STRING);
-        cell.setCellValue(Column.TEN_SAN_PHAM.getName());
-        cell.setCellStyle(titleStyle);
-        // Đơn chính
-        cell = row.createCell(Column.DON_CHINH.getIndex(), CellType.NUMERIC);
-        cell.setCellValue(Column.DON_CHINH.getName());
-        cell.setCellStyle(titleStyle);
-        // Lấy thêm lần 1
-        cell = row.createCell(Column.L1.getIndex(), CellType.NUMERIC);
-        cell.setCellValue(Column.L1.getName());
-        cell.setCellStyle(titleStyle);
-        // Lấy thêm lần 2
-        cell = row.createCell(Column.L2.getIndex(), CellType.NUMERIC);
-        cell.setCellValue(Column.L2.getName());
-        cell.setCellStyle(titleStyle);
-        // Tổng
-        cell = row.createCell(Column.TONG.getIndex(), CellType.NUMERIC);
-        cell.setCellValue(Column.TONG.getName());
-        cell.setCellStyle(titleStyle);
-        // Đơn giá
-        cell = row.createCell(Column.DON_GIA.getIndex(), CellType.STRING);
-        cell.setCellValue(Column.DON_GIA.getName());
-        cell.setCellStyle(titleStyle);
-        // Thành tiền
-        cell = row.createCell(Column.THANH_TIEN.getIndex(), CellType.NUMERIC);
-        cell.setCellValue(Column.THANH_TIEN.getName());
-        cell.setCellStyle(titleStyle);
-        // Lợi nhuận
-        cell = row.createCell(Column.LOI_NHUAN.getIndex(), CellType.NUMERIC);
-        cell.setCellValue(Column.LOI_NHUAN.getName());
-        cell.setCellStyle(titleStyle);
-
-        // Data
-        TableModel tableModel = isInputOrderPage ? resultTbl.getModel() : summaryTbl.getModel();
-        List<OrderItem> items = new ArrayList<>();
-        for(int i = 0; i < tableModel.getRowCount(); i ++) {
-            boolean isEndOfTable = i == tableModel.getRowCount() - 1;
-            rownum++;
-            row = sheet.createRow(rownum);
- 
-            // STT
-            cell = row.createCell(0, CellType.STRING);
-            cell.setCellValue(String.valueOf(tableModel.getValueAt(i, Column.STT.getIndex())));
-            cell.setCellStyle(normalCellStyle);
-            // Tên sản phẩm
-            cell = row.createCell(Column.TEN_SAN_PHAM.getIndex(), CellType.STRING);
-            String tenSp = String.valueOf(tableModel.getValueAt(i, Column.TEN_SAN_PHAM.getIndex()));
-            cell.setCellValue(tenSp);
-            cell.setCellStyle(isEndOfTable ? normalCellStyle : productNameCellStyle);
-            // Đơn chính
-            cell = row.createCell(Column.DON_CHINH.getIndex(), CellType.NUMERIC);
-            Integer quantity = (Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex());
-            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex()));
-            cell.setCellStyle(normalCellStyle);
-            // Lấy thêm lần 1
-            cell = row.createCell(Column.L1.getIndex(), CellType.NUMERIC);
-            Integer l1 = (Integer)tableModel.getValueAt(i, Column.L1.getIndex());
-            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.L1.getIndex()));
-            cell.setCellStyle(normalCellStyle);
-            // Lấy thêm lần 2
-            cell = row.createCell(Column.L2.getIndex(), CellType.NUMERIC);
-            Integer l2 = (Integer)tableModel.getValueAt(i, Column.L2.getIndex());
-            cell.setCellValue((Integer)tableModel.getValueAt(i, Column.L2.getIndex()));
-            cell.setCellStyle(normalCellStyle);
-            // Tổng
-            cell = row.createCell(Column.TONG.getIndex(), CellType.NUMERIC);
-            Integer sumQty = (Integer)tableModel.getValueAt(i, Column.TONG.getIndex());
-            cell.setCellValue(quantity);
-            cell.setCellStyle(isEndOfTable ? sumCellStyle : normalCellStyle);
-            // Đơn giá
-            cell = row.createCell(Column.DON_GIA.getIndex(), CellType.STRING);
-            String unitPrice = String.valueOf(tableModel.getValueAt(i, Column.DON_GIA.getIndex()));
-            cell.setCellValue(unitPrice);
-            cell.setCellStyle(normalCellStyle);
-            // Thành tiền
-            cell = row.createCell(Column.THANH_TIEN.getIndex(), CellType.NUMERIC);
-            Integer price = Integer.valueOf(tableModel.getValueAt(i, Column.THANH_TIEN.getIndex()).toString());
-            cell.setCellValue(price);
-            cell.setCellStyle(isEndOfTable ? sumCellStyle : normalCellStyle);
-            // Lợi nhuận
-            Integer profit = (Integer)tableModel.getValueAt(i, Column.LOI_NHUAN.getIndex());
-            cell = row.createCell(Column.LOI_NHUAN.getIndex(), CellType.NUMERIC);
-            cell.setCellValue(profit);
-            cell.setCellStyle(isEndOfTable ? sumCellStyle : normalCellStyle);
-            if(!isEndOfTable) {
-                OrderItem item = new OrderItem();
-                Product product = new Product();
-                product.setName(tenSp);
-                item.setProduct(product);
-                item.setQuantity(quantity);
-                item.setL1(l1);
-                item.setL2(l2);
-                item.setPrice(price);
-                item.setUnitPrice(Integer.valueOf(unitPrice));
-                item.setProfit(profit);
-                items.add(item);
-            }
-        }
-        String fileName = isInputOrderPage ? exportFileNameTxt.getText() : summaryFileName.getText();
-        if(isInputOrderPage) {
-            exportOrderToExcel(workbook, fileName + " (lợi nhuận)", true);
-            exportOrderToExcel(workbook, fileName, false);
-        } else {
-            exportOrderToExcel(workbook, fileName, true);
-        }
-        errorLbl.setText("Vợ yêu tạo xong đơn hàng rồi nè!");
-
-        //fill order data
-        if(isInputOrderPage) {
-            order.setName(fileName);
-            order.setName(fileName);
-            Customer customer = new Customer();
-            customer.setId(1);
-            order.setCustomer(customer);
-            order.setCreatedDate(LocalDate.now());
-            order.setItems(items);
-            processor.insertBillRecord(order);
+    public TableModel getModelByPage(Page page) {
+        switch (page) {
+            case SUMMARY: return summaryTbl.getModel();
+            default: return orderTbl.getModel();
         }
     }
 
-    private void exportOrderToExcel(HSSFWorkbook workbook, String fileName, boolean includedProfit) throws IOException {
-        if(!includedProfit) {
-            HSSFSheet sheet = workbook.getSheetAt(0);
-            Iterator rowIter = sheet.iterator();
-            while (rowIter.hasNext()) {
-                HSSFRow row = (HSSFRow)rowIter.next();
-                HSSFCell cell = row.getCell(Column.LOI_NHUAN.getIndex());
-                row.removeCell(cell);
-            }
+    public String getFileNameByPage(Page page) {
+        switch (page) {
+            case SUMMARY: summaryFileName.getText();
+            default: exportFileNameTxt.getText();
         }
-        String filePath = System.getProperty("user.dir");
-        if(filePath.contains("/")) {
-            filePath += "/";
-        } else {
-            filePath += "\\";
-        }
-        File file = new File( filePath + fileName +".xls");
-        file.setWritable(true, false);
-        file.getParentFile().mkdirs();
-        FileOutputStream outFile = new FileOutputStream(file);
-
-        workbook.write(outFile);
-        outFile.close();
-
+        return exportFileNameTxt.getText();
     }
-    
+
     private void initGUI() {
          statusText.setText("Nhập file thành công!");
          System.out.println(indexToLevel.toString());
@@ -1040,6 +813,7 @@ public class HoaiAn extends javax.swing.JFrame {
                 new HoaiAn().setVisible(true);
             }
         });
+        controller = new Controller();
     }
     
     static Map<String, Integer> productToBuyPrice = new HashMap<>();
@@ -1074,7 +848,7 @@ public class HoaiAn extends javax.swing.JFrame {
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JList<String> productList;
     private javax.swing.JCheckBox profitCbx;
-    private javax.swing.JTable resultTbl;
+    private javax.swing.JTable orderTbl;
     private javax.swing.JComboBox<String> saleLevelCbx;
     private javax.swing.JLabel statusText;
     private javax.swing.JTextField summaryFileName;
