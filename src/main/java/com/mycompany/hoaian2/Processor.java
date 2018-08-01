@@ -1,17 +1,15 @@
 package com.mycompany.hoaian2;
 
+import com.google.common.base.Joiner;
 import com.mycompany.models.Customer;
 import com.mycompany.models.Order;
 import com.mycompany.models.OrderItem;
 import com.mycompany.models.Product;
-import com.sun.deploy.util.StringUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.sql.*;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -81,10 +79,9 @@ public class Processor {
     }
 
     public List<Order> getOrdersByDateRange(String fromDate, String toDate) {
-        Connection conn = null;
-        Statement stm = null;
-        ResultSet rs = null;
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+        Connection conn;
+        Statement stm;
+        ResultSet rs;
         String sDate = LocalDate.parse(fromDate).atStartOfDay().atZone(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE);
         String eDate = LocalDate.parse(toDate).atTime(LocalTime.MAX).atZone(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE);
         Map<Integer, Order> idToOrder = new HashMap<>();
@@ -140,16 +137,16 @@ public class Processor {
         Connection conn = null;
         Statement stm = null;
         ResultSet rs = null;
-        List<String> orderIdsToDelete = orders.stream().map(o -> o.getId().toString()).collect(Collectors.toList());
         try {
-            String sql = "DELETE FROM orders WHERE id IN (" + StringUtils.join(orderIdsToDelete,",") + ")";
+            List<String> orderIdsToDelete = orders.stream().map(o -> o.getId().toString()).collect(Collectors.toList());
+            String sql = "DELETE FROM orders WHERE id IN (" + Joiner.on(",").join(orderIdsToDelete) + ")";
             conn = dataConnector.getMySQLConnection();
             stm = conn.createStatement();
             stm.executeUpdate(sql);
 
-            sql = "DELETE FROM orderitems WHERE order_id IN (" + StringUtils.join(orderIdsToDelete,",") + ")";
+            sql = "DELETE FROM orderitems WHERE order_id IN (" + Joiner.on(",").join(orderIdsToDelete) + ")";
             stm.executeUpdate(sql);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             dataConnector.cleanUp(conn, stm, rs);
