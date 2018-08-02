@@ -41,6 +41,7 @@ public class HoaiAn extends javax.swing.JFrame {
         setTitle("Chúc vợ yêu dấu làm việc vui vẻ!!!");
         initSelectProductListByFile();
         toDateTbx.setText(LocalDate.now().toString());
+        loadBillBtn.setEnabled(false);
     }
 
     /**
@@ -64,11 +65,11 @@ public class HoaiAn extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         productList = new javax.swing.JList<>();
-        profitCbx = new javax.swing.JCheckBox();
         exportFileNameTxt = new javax.swing.JTextField();
         saleLevelCbx = new javax.swing.JComboBox<>();
         createTableBtn = new javax.swing.JButton();
         exportBtn = new javax.swing.JButton();
+        clearBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         summaryTbl = new javax.swing.JTable();
@@ -128,7 +129,7 @@ public class HoaiAn extends javax.swing.JFrame {
         orderTbl.setRowHeight(20);
         orderTbl.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                resultTblPropertyChange(evt);
+                orderTblPropertyChange(evt);
             }
         });
         jScrollPane2.setViewportView(orderTbl);
@@ -158,9 +159,6 @@ public class HoaiAn extends javax.swing.JFrame {
         productList.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jScrollPane1.setViewportView(productList);
 
-        profitCbx.setText("In lợi nhuận");
-        profitCbx.setEnabled(false);
-
         exportFileNameTxt.setColumns(10);
 
         saleLevelCbx.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
@@ -187,43 +185,49 @@ public class HoaiAn extends javax.swing.JFrame {
             }
         });
 
+        clearBtn.setText("Clear");
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(261, 261, 261)
-                .addComponent(statusText, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54))
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(saleLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buyLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(inputSelectorCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(saleLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buyLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(inputSelectorCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(createTableBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(errorLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(exportFileNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(profitCbx)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(exportBtn))
+                        .addComponent(statusText, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(273, 273, 273)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(createTableBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(clearBtn)
+                                .addGap(130, 130, 130)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(exportFileNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(exportBtn))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,18 +236,18 @@ public class HoaiAn extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(statusText, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(inputSelectorCbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(inputSelectorCbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(errorLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(saleLevelCbx)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(buyLevelCbx)
-                        .addComponent(createTableBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(errorLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(createTableBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(clearBtn))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(exportBtn)
                         .addComponent(exportFileNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(profitCbx)
                         .addComponent(jLabel2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -425,44 +429,50 @@ public class HoaiAn extends javax.swing.JFrame {
     private void createTableBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTableBtnActionPerformed
         // TODO add your handling code here:
         errorLbl.setText("");
-        fillProductToTable();
+        updateProductToTable();
     }//GEN-LAST:event_createTableBtnActionPerformed
 
-    
-
-    private void fillProductToTable() {
+    private void resetOrderTable(boolean clearData) {
+        exportFileNameTxt.setText("");
         productToBuyPrice.clear();
+        Map<String, Integer> productToQuantity = new HashMap<>();
         DefaultTableModel tableModel = (DefaultTableModel) orderTbl.getModel();
-        if(!isValidLevel()) {
-            return;
-        } else {
-            int rowCount = tableModel.getRowCount();
-            for(int i = rowCount - 1; i >= 0; i--) {
-                tableModel.removeRow(i);
+        int rowCount = tableModel.getRowCount();
+        for(int i = rowCount - 1; i >= 0; i--) {
+            boolean isEndOfTable = i == tableModel.getRowCount() - 1;
+            if(!isEndOfTable) {
+                String tenSp = String.valueOf(tableModel.getValueAt(i, Column.TEN_SAN_PHAM.getIndex()));
+                Integer quantity = (Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex());
+                productToQuantity.put(tenSp, quantity);
             }
+            tableModel.removeRow(i);
         }
         try {
-            
             String saleLevel = String.valueOf(saleLevelCbx.getSelectedItem());
             String buyLevel = String.valueOf(buyLevelCbx.getSelectedItem());
             List<String> products = productList.getSelectedValuesList();
             int stt = 0;
             for(String productName : products) {
                 stt++;
-                tableModel.addRow(new Object[]{stt, productName, 0, 0, 0, 0, productToPrice.get(productName).get(saleLevel), 0, 0});
+                Integer previousQuantity = productToQuantity.get(productName) == null ? 0 : productToQuantity.get(productName);
+                tableModel.addRow(new Object[]{stt, productName,  clearData ? 0 : previousQuantity, 0, 0, 0, productToPrice.get(productName).get(saleLevel), 0, 0});
                 productToBuyPrice.put(productName, productToPrice.get(productName).get(buyLevel));
             }
             tableModel.addRow(new Object[]{"", "TỔNG", 0, 0, 0, 0, "", 0, 0});
         } catch (Exception e) {
             errorLbl.setText("Ây da, phần mềm của chồng có lỗi rồi :(");
         }
-        
     }
-    
-    private void resultTblPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_resultTblPropertyChange
+    private void updateProductToTable() {
+        if(isValidLevel()) {
+            resetOrderTable(false);
+        }
+    }
+
+    private void orderTblPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_orderTblPropertyChange
         // TODO add your handling code here:
         updateTableValues(orderTbl);
-    }//GEN-LAST:event_resultTblPropertyChange
+    }//GEN-LAST:event_orderTblPropertyChange
 
     private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
         // TODO add your handling code here:
@@ -478,7 +488,7 @@ public class HoaiAn extends javax.swing.JFrame {
             errorLbl.setText("Oạch!!! Bị lỗi gì rồi vợ ơi, vợ làm lại thử xem...");
             Logger.getLogger(HoaiAn.class.getName()).log(Level.SEVERE, null, e);
         }
-        
+
     }//GEN-LAST:event_exportBtnActionPerformed
 
     private void saleLevelCbxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleLevelCbxActionPerformed
@@ -557,7 +567,7 @@ public class HoaiAn extends javax.swing.JFrame {
             List<Order> selectedOrders = new ArrayList<>();
             billList.getSelectedValuesList().forEach(name -> selectedOrders.add(nameToOrder.get(name)));
             Order order = controller.getProcessor().summarizeOrders(selectedOrders);
-            updateOrderToTable(order);
+            updateOrderToTable(order, summaryTbl.getModel());
 
             //update filename text field
             summaryFileName.setText(billList.getSelectedValue());
@@ -586,20 +596,26 @@ public class HoaiAn extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_deleteOrderBtnActionPerformed
 
-    private void updateOrderToTable(Order order) {
-        DefaultTableModel tableModel = (DefaultTableModel)summaryTbl.getModel();
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        resetOrderTable(true);
+    }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void updateOrderToTable(Order order, TableModel model) {
+        DefaultTableModel tableModel = (DefaultTableModel)model;
         int stt = 0;
         Integer quantity = 0;
         Integer price = 0;
         Integer profit = 0;
-        for(OrderItem item : order.getItems()) {
-            String productName = item.getProduct().getName();
-            stt++;
-            Integer sumQty = item.getQuantity() + item.getL1() + item.getL2();
-            tableModel.addRow(new Object[]{stt, productName, item.getQuantity(), item.getL1(), item.getL2(), sumQty, item.getUnitPrice(), item.getPrice(), item.getProfit()});
-            quantity += sumQty;
-            price += item.getPrice();
-            profit += item.getProfit();
+        if(Objects.nonNull(order)) {
+            for(OrderItem item : order.getItems()) {
+                String productName = item.getProduct().getName();
+                stt++;
+                Integer sumQty = item.getQuantity() + item.getL1() + item.getL2();
+                tableModel.addRow(new Object[]{stt, productName, item.getQuantity(), item.getL1(), item.getL2(), sumQty, item.getUnitPrice(), item.getPrice(), item.getProfit()});
+                quantity += sumQty;
+                price += item.getPrice();
+                profit += item.getProfit();
+            }
         }
 
         tableModel.addRow(new Object[]{"", "TỔNG", quantity, 0, 0, quantity, "", price.toString(), profit});
@@ -662,7 +678,7 @@ public class HoaiAn extends javax.swing.JFrame {
         updateTableValues(orderTbl);
     }
 
-    
+
     private void readInputExcel(FileInputStream fis) throws IOException {
         while(saleLevelCbx.getItemCount()!= 1) {
             saleLevelCbx.removeItemAt(1);
@@ -672,15 +688,15 @@ public class HoaiAn extends javax.swing.JFrame {
         productToPrice = new LinkedHashMap<>();
         HSSFWorkbook wb = new HSSFWorkbook(fis);
         HSSFSheet sheet = wb.getSheetAt(0);
-        Iterator<Row> rowIterator = sheet.iterator(); 
+        Iterator<Row> rowIterator = sheet.iterator();
         while(rowIterator.hasNext()) {
             Row row = rowIterator.next();
-            
+
             Iterator<Cell> cellIterator = row.cellIterator();
             String productName = null;
             Map<String, Integer> levelToPrice = new HashMap<>();
             while(cellIterator.hasNext()) {
-                
+
                 Cell cell = cellIterator.next();
                 CellType cellType = cell.getCellTypeEnum();
                 switch (cellType) {
@@ -761,10 +777,10 @@ public class HoaiAn extends javax.swing.JFrame {
              buyLevelCbx.addItem(String.valueOf(level));
          }
     }
-    
+
     private boolean isValidLevel() {
         if(saleLevelCbx.getSelectedIndex() == 0) {
-           errorLbl.setText("Vợ chọn MỨC BÁN hàng cho SỈ đi kìa <3"); 
+           errorLbl.setText("Vợ chọn MỨC BÁN hàng cho SỈ đi kìa <3");
            clearBuyLevel();
            return false;
         }
@@ -787,7 +803,7 @@ public class HoaiAn extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -808,14 +824,18 @@ public class HoaiAn extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new HoaiAn().setVisible(true);
-            }
-        });
+        HoaiAn hoaiAn = new HoaiAn();
+        hoaiAn.setVisible(true);
+        hoaiAn.loadBillBtn.setEnabled(false);
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new HoaiAn().setVisible(true);
+//            }
+//        });
         controller = new Controller();
+        hoaiAn.loadBillBtn.setEnabled(true);
     }
-    
+
     static Map<String, Integer> productToBuyPrice = new HashMap<>();
     static Map<Integer, String> indexToLevel = new HashMap<>();
     static Map<String, Map<String, Integer>> productToPrice = new HashMap<>();
@@ -823,6 +843,7 @@ public class HoaiAn extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> billList;
     private javax.swing.JComboBox<String> buyLevelCbx;
+    private javax.swing.JButton clearBtn;
     private javax.swing.JButton createTableBtn;
     private javax.swing.JButton deleteOrderBtn;
     private javax.swing.JLabel errorLbl;
@@ -846,9 +867,8 @@ public class HoaiAn extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JButton loadBillBtn;
     private javax.swing.JTabbedPane mainTabbedPane;
-    private javax.swing.JList<String> productList;
-    private javax.swing.JCheckBox profitCbx;
     private javax.swing.JTable orderTbl;
+    private javax.swing.JList<String> productList;
     private javax.swing.JComboBox<String> saleLevelCbx;
     private javax.swing.JLabel statusText;
     private javax.swing.JTextField summaryFileName;

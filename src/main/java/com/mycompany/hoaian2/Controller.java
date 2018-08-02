@@ -6,7 +6,6 @@ import org.apache.poi.ss.usermodel.*;
 
 import javax.swing.table.TableModel;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -39,7 +38,6 @@ public class Controller {
 
     public void exportFile(Page page, String fileName, TableModel tableModel) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
-        Order order = new Order();
         HSSFSheet sheet = workbook.createSheet("don hang");
         sheet.setColumnWidth(Column.STT.getIndex(), 1500);
         sheet.setColumnWidth(Column.TEN_SAN_PHAM.getIndex(), 4500);
@@ -99,7 +97,6 @@ public class Controller {
         cell.setCellStyle(titleStyle);
 
         // Data
-        List<OrderItem> items = new ArrayList<>();
         for(int i = 0; i < tableModel.getRowCount(); i ++) {
             boolean isEndOfTable = i == tableModel.getRowCount() - 1;
             rownum++;
@@ -149,7 +146,31 @@ public class Controller {
             cell = row.createCell(Column.LOI_NHUAN.getIndex(), CellType.NUMERIC);
             cell.setCellValue(profit);
             cell.setCellStyle(isEndOfTable ? sumCellStyle : normalCellStyle);
-            if(!isEndOfTable) {
+        }
+
+        Controller.exportOrderToExcel(workbook, fileName + " (lợi nhuận)", true);
+        Controller.exportOrderToExcel(workbook, fileName, false);
+
+
+        //fill order data
+        if(Page.ORDER.equals(page)) {
+            Order order = getOrderItemsFromTable(tableModel, fileName);
+            processor.insertBillRecord(order);
+        }
+    }
+
+    public static Order getOrderItemsFromTable(TableModel tableModel, String fileName) {
+        List<OrderItem> items = new ArrayList<>();
+        for(int i = 0; i < tableModel.getRowCount(); i ++) {
+            boolean isEndOfTable = i == tableModel.getRowCount() - 1;
+            if (!isEndOfTable) {
+                String tenSp = String.valueOf(tableModel.getValueAt(i, Column.TEN_SAN_PHAM.getIndex()));
+                Integer quantity = (Integer)tableModel.getValueAt(i, Column.DON_CHINH.getIndex());
+                Integer l1 = (Integer)tableModel.getValueAt(i, Column.L1.getIndex());
+                Integer l2 = (Integer)tableModel.getValueAt(i, Column.L2.getIndex());
+                Integer price = Integer.valueOf(tableModel.getValueAt(i, Column.THANH_TIEN.getIndex()).toString());
+                String unitPrice = String.valueOf(tableModel.getValueAt(i, Column.DON_GIA.getIndex()));
+                Integer profit = (Integer)tableModel.getValueAt(i, Column.LOI_NHUAN.getIndex());
                 OrderItem item = new OrderItem();
                 Product product = new Product();
                 product.setName(tenSp);
@@ -163,22 +184,18 @@ public class Controller {
                 items.add(item);
             }
         }
-
-        Controller.exportOrderToExcel(workbook, fileName + " (lợi nhuận)", true);
-        Controller.exportOrderToExcel(workbook, fileName, false);
-
-
-        //fill order data
-        if(Page.ORDER.equals(page)) {
-            order.setName(fileName);
-            order.setName(fileName);
-            Customer customer = new Customer();
-            customer.setId(1);
-            order.setCustomer(customer);
-            order.setCreatedDate(LocalDate.now());
-            order.setItems(items);
-            processor.insertBillRecord(order);
+        if(items.isEmpty()) {
+            return null;
         }
+        Order order = new Order();
+        order.setName(fileName);
+        order.setName(fileName);
+        Customer customer = new Customer();
+        customer.setId(1);
+        order.setCustomer(customer);
+        order.setCreatedDate(LocalDate.now());
+        order.setItems(items);
+        return order;
     }
 
     public static HSSFCellStyle createStyleForTitle(HSSFWorkbook workbook) {
