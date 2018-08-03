@@ -1,0 +1,295 @@
+JFDML JFormDesigner: "6.0.3.0.150" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp mainTabbedPane::::1047:x}"
+			"$verticalGroup": "par l {comp mainTabbedPane::l:::x}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 3
+			"resizable": false
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "mainTabbedPane"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq t {space :::x, par l:::p {seq l {comp saleLevelCbx:::p:119:p, space :::p, comp buyLevelCbx:::p:124:p}, comp jScrollPane1::::0:x, comp inputSelectorCbx:::p:249:p}, space s:::p, par l {seq {comp errorLbl:::p:221:p, space :::p, comp statusText:::p:146:p, space :::x, comp jLabel3:::p:373:p, space :p:54:p}, seq {par l {seq {comp createTableBtn:::p::p, space :::p, comp clearBtn:::p::p, space :p:130:p, comp jLabel2:::p::p, space :::p, comp exportFileNameTxt:::p:255:p, space :::p, comp exportBtn:::p::p}, comp jScrollPane2:::p:749:p}, space :0:0:x}}}}"
+					"$verticalGroup": "par l {seq {space :::p, par l {comp statusText::l::29:x, comp jLabel3::t:p::p, comp inputSelectorCbx:::p::p, comp errorLbl::l:::x}, space :::p, par l {comp saleLevelCbx:::::x, par b:l {comp buyLevelCbx::b:::x, comp createTableBtn::b:::x, comp clearBtn::b:p::p}, par b:l {comp exportBtn::b:p::p, comp exportFileNameTxt::b:p::p, comp jLabel2::b:p::p}}, space :::p, par l {comp jScrollPane2::::429:x, comp jScrollPane1:::::x}, space :::p}}"
+				} ) {
+					name: "jPanel1"
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "buyLevelCbx"
+						"font": new java.awt.Font( "Arial", 0, 11 )
+						"maximumRowCount": 20
+						"model": new javax.swing.DefaultComboBoxModel {
+							selectedItem: "Mức nhập"
+							addElement( "Mức nhập" )
+						}
+						"toolTipText": ""
+						"enabled": false
+						auxiliary() {
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "buyLevelCbxActionPerformed", true ) )
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane2"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "orderTbl"
+							"border": new javax.swing.border.EtchedBorder( 1, null, null )
+							"font": new java.awt.Font( "Arial", 0, 12 )
+							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector, new java.util.Vector {
+								add( "" )
+								add( "Tên sản phẩm" )
+								add( "Đơn chính" )
+								add( "Lấy thêm L1" )
+								add( "Lấy thêm L2" )
+								add( "Tổng" )
+								add( "Đơn giá" )
+								add( "Thành tiền" )
+								add( "Lợi nhuận" )
+							}, new java.util.Vector {
+								add( class java.lang.Integer )
+								add( class java.lang.String )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+							}, new java.util.Vector {
+								add( false )
+								add( false )
+								add( true )
+								add( true )
+								add( true )
+								add( false )
+								add( false )
+								add( false )
+								add( false )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							} )
+							"rowHeight": 20
+							addEvent( new FormEvent( "java.beans.PropertyChangeListener", "propertyChange", "orderTblPropertyChange", true ) )
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "statusText"
+						"font": new java.awt.Font( "Arial", 1, 12 )
+						"foreground": new java.awt.Color( 51, 102, 255, 255 )
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "inputSelectorCbx"
+						"model": new javax.swing.DefaultComboBoxModel {
+							selectedItem: "Loại sản phẩm"
+							addElement( "Loại sản phẩm" )
+						}
+						auxiliary() {
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "selectProductListByFile", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel2"
+						"text": "Tên file:"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "errorLbl"
+						"font": new java.awt.Font( "Arial", 0, 12 )
+						"foreground": new java.awt.Color( 255, 0, 51, 255 )
+						"horizontalAlignment": 0
+						"toolTipText": ""
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel3"
+						"font": new java.awt.Font( "Arial", 1, 18 )
+						"foreground": new java.awt.Color( 51, 51, 255, 255 )
+						"horizontalAlignment": 0
+						"text": "Sản phẩm độc quyền của An Mocha"
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane1"
+						add( new FormComponent( "javax.swing.JList" ) {
+							name: "productList"
+							"font": new java.awt.Font( "Arial", 0, 12 )
+							"model": new javax.swing.DefaultListModel
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "exportFileNameTxt"
+						"columns": 10
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "saleLevelCbx"
+						"font": new java.awt.Font( "Arial", 0, 11 )
+						"maximumRowCount": 20
+						"model": new javax.swing.DefaultComboBoxModel {
+							selectedItem: "Mức bán"
+							addElement( "Mức bán" )
+						}
+						"toolTipText": ""
+						auxiliary() {
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saleLevelCbxActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "createTableBtn"
+						"text": "Tạo bảng"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "createTableBtnActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "exportBtn"
+						"text": "Xuất file"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "exportBtnActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "clearBtn"
+						"text": "Clear"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "clearBtnActionPerformed", true ) )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Nhập đơn"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {seq {comp jLabel4:::p::p, space :::p, comp fromDateTbx:::p::p, space :::p, comp jLabel5:::p::p, space :::p, comp toDateTbx:::p::p}, comp jScrollPane4::::0:x}, space :::p, par l {seq {comp loadBillBtn:::p::p, space :::p, comp deleteOrderBtn:::p::p, space :::x, comp jLabel6:::p::p, space :::p, comp summaryFileName:::p:266:p, space s:::p, comp exportSummaryBtn:::p::p}, comp jScrollPane3::::756:x}, space :p:16:p}, seq t {comp jLabel1:::p::p, space :::x, comp jLabel7:::p:373:p, space :p:59:p}}}}"
+					"$verticalGroup": "par l {seq l {space :p:15:p, par b {comp jLabel7::b:p::p, comp jLabel1::b:p::p}, space :::p, par b {comp jLabel4::b:p::p, comp jLabel5::b:p::p, comp fromDateTbx::b:p::p, comp toDateTbx::b:p::p, comp loadBillBtn::b:p::p, comp exportSummaryBtn::b:p::p, comp summaryFileName::b:p::p, comp jLabel6::b:p::p, comp deleteOrderBtn::b:p::p}, space :::p, par l {comp jScrollPane3::::427:x, comp jScrollPane4:::::x}, space :::p}}"
+				} ) {
+					name: "jPanel2"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane3"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "summaryTbl"
+							"border": new javax.swing.border.EtchedBorder( 1, null, null )
+							"font": new java.awt.Font( "Arial", 0, 12 )
+							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector, new java.util.Vector {
+								add( "" )
+								add( "Tên sản phẩm" )
+								add( "Đơn chính" )
+								add( "Lấy thêm L1" )
+								add( "Lấy thêm L2" )
+								add( "Tổng" )
+								add( "Đơn giá" )
+								add( "Thành tiền" )
+								add( "Lợi nhuận" )
+							}, new java.util.Vector {
+								add( class java.lang.Integer )
+								add( class java.lang.String )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+								add( class java.lang.Integer )
+							}, new java.util.Vector {
+								add( false )
+								add( false )
+								add( true )
+								add( true )
+								add( true )
+								add( false )
+								add( false )
+								add( false )
+								add( false )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							} )
+							"enabled": false
+							"rowHeight": 20
+							addEvent( new FormEvent( "java.beans.PropertyChangeListener", "propertyChange", "summaryTblPropertyChange", true ) )
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane4"
+						add( new FormComponent( "javax.swing.JList" ) {
+							name: "billList"
+							"font": new java.awt.Font( "Arial", 0, 12 )
+							"model": new javax.swing.DefaultListModel
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+							addEvent( new FormEvent( "javax.swing.event.ListSelectionListener", "valueChanged", "billListValueChanged", true ) )
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel4"
+						"text": "Từ"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel5"
+						"text": "đến:"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "fromDateTbx"
+						"text": "2018-01-01"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "toDateTbx"
+						"text": "2018-05-20"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "toDateTbxActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "loadBillBtn"
+						"text": "Xem đơn hàng"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "loadBillBtnActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "exportSummaryBtn"
+						"text": "Xuất file"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "exportSummaryBtnActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "summaryFileName"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel6"
+						"text": "Tên file:"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel7"
+						"font": new java.awt.Font( "Arial", 1, 18 )
+						"foreground": new java.awt.Color( 51, 51, 255, 255 )
+						"horizontalAlignment": 0
+						"text": "Sản phẩm độc quyền của An Mocha"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel1"
+						"foreground": new java.awt.Color( 0, 153, 0, 255 )
+						"text": "Vợ nhớ kết nối mạng khi sử dụng tính năng này nha!"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "deleteOrderBtn"
+						"text": "Xóa đơn"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "deleteOrderBtnActionPerformed", true ) )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Xem đơn"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}
