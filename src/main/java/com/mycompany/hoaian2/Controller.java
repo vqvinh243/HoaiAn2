@@ -153,7 +153,7 @@ public class Controller {
 
 
         //fill order data
-        if(Page.ORDER.equals(page)) {
+        if(Page.ORDER.equals(page) && InstanceProperties.isPrivate()) {
             Order order = getOrderItemsFromTable(tableModel, fileName);
             processor.insertBillRecord(order);
         }

@@ -19,7 +19,7 @@ public class Processor {
     private DataConnector dataConnector = DataConnector.getInstance();
     public static Map<String, Integer> productNameToId = new HashMap<>();
     public Processor() {
-        if(productNameToId.isEmpty()) {
+        if(productNameToId.isEmpty() && InstanceProperties.isPrivate()) {
             Connection conn = null;
             Statement stm = null;
             ResultSet rs = null;
