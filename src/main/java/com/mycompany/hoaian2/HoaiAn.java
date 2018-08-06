@@ -33,12 +33,15 @@ public class HoaiAn extends javax.swing.JFrame {
     private static Controller controller;
     public HoaiAn() {
         initComponents();
+        if(!InstanceProperties.isPrivate()) {
+            mainTabbedPane.removeTabAt(1);
+        }
         orderTbl.getColumnModel().getColumn(Column.STT.getIndex()).setMaxWidth(50);
         orderTbl.getColumnModel().getColumn(Column.TEN_SAN_PHAM.getIndex()).setMinWidth(120);
         summaryTbl.getColumnModel().getColumn(Column.STT.getIndex()).setMaxWidth(50);
         summaryTbl.getColumnModel().getColumn(Column.TEN_SAN_PHAM.getIndex()).setMinWidth(120);
         setLocationRelativeTo(null);
-        setTitle("Chúc vợ yêu dấu làm việc vui vẻ!!!");
+        setTitle(InstanceProperties.getInstance().getTitle());
         initSelectProductListByFile();
         toDateTbx.setText(LocalDate.now().toString());
         loadBillBtn.setEnabled(false);
@@ -205,7 +208,7 @@ public class HoaiAn extends javax.swing.JFrame {
                         .addComponent(buyLevelCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(inputSelectorCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(errorLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -226,7 +229,7 @@ public class HoaiAn extends javax.swing.JFrame {
                                 .addComponent(exportFileNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(exportBtn))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -337,7 +340,7 @@ public class HoaiAn extends javax.swing.JFrame {
         jLabel7.setText("Sản phẩm độc quyền của An Mocha");
 
         jLabel1.setForeground(new java.awt.Color(0, 153, 0));
-        jLabel1.setText("Vợ nhớ kết nối mạng khi sử dụng tính năng này nha!");
+        jLabel1.setText(InstanceProperties.getInstance().getConnectInternetReminder());
 
         deleteOrderBtn.setText("Xóa đơn");
         deleteOrderBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -479,13 +482,13 @@ public class HoaiAn extends javax.swing.JFrame {
         errorLbl.setText("");
         try {
            if(exportFileNameTxt.getText().isEmpty()) {
-               errorLbl.setText("Vợ yêu quên nhập tên file kìa :)");
+               errorLbl.setText(InstanceProperties.getInstance().getFileNameInputReminder());
            } else {
                controller.exportFile(Page.ORDER, getFileNameByPage(Page.ORDER), getModelByPage(Page.ORDER));
-               errorLbl.setText("Vợ yêu tạo xong đơn hàng rồi nè!");
+               errorLbl.setText(InstanceProperties.getInstance().getCongratulationReminder());
            }
         } catch (Exception e) {
-            errorLbl.setText("Oạch!!! Bị lỗi gì rồi vợ ơi, vợ làm lại thử xem...");
+            errorLbl.setText(InstanceProperties.getInstance().getUnknownErrorWarning());
             Logger.getLogger(HoaiAn.class.getName()).log(Level.SEVERE, null, e);
         }
 
@@ -586,7 +589,7 @@ public class HoaiAn extends javax.swing.JFrame {
     private void deleteOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteOrderBtnActionPerformed
         if(!billList.isSelectionEmpty()) {
             int input = JOptionPane.showConfirmDialog(null,
-                    "Vợ yêu có thực sự muốn xóa không?", "Select an Option...", JOptionPane.YES_NO_OPTION);
+                    InstanceProperties.getInstance().getDeleteConfirmation(), "Select an Option...", JOptionPane.YES_NO_OPTION);
             if(input == 0) {
                 List<Order> selectedOrders = new ArrayList<>();
                 billList.getSelectedValuesList().forEach(name -> selectedOrders.add(nameToOrder.get(name)));
@@ -631,12 +634,28 @@ public class HoaiAn extends javax.swing.JFrame {
         int loinhuanTotal = 0;
         for(int row = 0; row < tableModel.getRowCount(); row ++) {
             if(row < (tableModel.getRowCount() - 1)) {
+                //Don chinh
+                Object donChinhObj = tableModel.getValueAt(row, Column.DON_CHINH.getIndex());
+                if(donChinhObj == null) {
+                    tableModel.setValueAt(0, row, Column.DON_CHINH.getIndex());
+                }
                 int donchinh = (Integer)tableModel.getValueAt(row, Column.DON_CHINH.getIndex());
                 donchinhTotal += donchinh;
+                // Lan 1
+                Object lan1Obj = tableModel.getValueAt(row, Column.L1.getIndex());
+                if(lan1Obj == null) {
+                    tableModel.setValueAt(0, row, Column.L1.getIndex());
+                }
                 int lan1 = (Integer)tableModel.getValueAt(row, Column.L1.getIndex());
                 lan1Total += lan1;
+                // Lan 2
+                Object lan2Obj = tableModel.getValueAt(row, Column.L2.getIndex());
+                if(lan2Obj == null) {
+                    tableModel.setValueAt(0, row, Column.L2.getIndex());
+                }
                 int lan2 = (Integer)tableModel.getValueAt(row, Column.L2.getIndex());
                 lan2Total += lan2;
+                //Tong
                 int tong = donchinh + lan1 + lan2;
                 tableModel.setValueAt(tong, row, Column.TONG.getIndex());
                 tongTotal += tong;
@@ -780,13 +799,13 @@ public class HoaiAn extends javax.swing.JFrame {
 
     private boolean isValidLevel() {
         if(saleLevelCbx.getSelectedIndex() == 0) {
-           errorLbl.setText("Vợ chọn MỨC BÁN hàng cho SỈ đi kìa <3");
+           errorLbl.setText(InstanceProperties.getInstance().getSelectSellLevelReminder());
            clearBuyLevel();
            return false;
         }
         buyLevelCbx.setEnabled(true);
         if(buyLevelCbx.getSelectedIndex() == 0) {
-            errorLbl.setText("Vợ chọn MỨC NHẬP hàng cho MÌNH đi kìa <3");
+            errorLbl.setText(InstanceProperties.getInstance().getSelectBuyLevelReminder());
             return false;
         }
         return true;
