@@ -13,7 +13,7 @@ public class InstanceProperties {
     private static final InstanceProperties instanceProps = new InstanceProperties();
     private static Properties props;
 
-    public static boolean isPrivate = false;
+    public static boolean isPrivate = true;
 
     private String title;
     private String selectBuyLevelReminder;
